@@ -1,0 +1,4 @@
+output/*
+src/template/*
+build/*
+node_modules/*

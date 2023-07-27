@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [
+      "ES2018",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "pretty": true,
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "**/*spec.ts"
+  ]
+}

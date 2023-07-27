@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "rootDir": "./",
+    "baseUrl": "./",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "outDir": "./build",
+    "removeComments": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+}
