@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { SubmitUseCase } from "./usecases/submit-service";
+import { SubmitUseCase } from "./usecases/submit-usecase";
 import { SubmitDTO } from "./submitDTO";
 
 export class Controller {

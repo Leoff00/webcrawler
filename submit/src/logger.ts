@@ -21,7 +21,7 @@ export function logMiddleware(
 
   custom.log(
     "info",
-    `:${now} [${APP_NAME}]: ${response.statusCode} | ${request.method} | ${request.path}`
+    `${now} [${APP_NAME}]: | ${request.method} | ${request.path}`
   );
 
   next();
