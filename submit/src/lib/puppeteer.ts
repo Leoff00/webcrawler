@@ -7,7 +7,7 @@ import { PuppeteerRoutines } from "./routines";
  * Puppeteer wrapper that handle puppeteer routines and inject
  * deps from lib/puppeteer routines and constants
  * @param submitDTO
- * @returns string - benefit of
+ * @returns Promise<string> - benefit searched
  * @author Leoff00
  */
 export async function scrapper(submitDTO: SubmitDTO): Promise<string> {

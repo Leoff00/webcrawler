@@ -11,7 +11,7 @@ const info = printf(({ level, message, label }) => {
 
 export function logMiddleware(
   request: Request,
-  response: Response,
+  _: Response,
   next: NextFunction
 ) {
   const custom = createLogger({
