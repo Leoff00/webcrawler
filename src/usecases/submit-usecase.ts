@@ -1,6 +1,6 @@
 import { SubmitDTO } from "../submitDTO";
 import { scrapper } from "../lib";
-import { getCachedData, cacheData } from "../cache/redis";
+import { getCachedData, cacheData } from "../lib/redis";
 
 export class SubmitUseCase {
   public static async execute(submitDTO: SubmitDTO): Promise<string> {
