@@ -5,7 +5,7 @@ import { expect, test, describe, beforeAll, afterAll } from "vitest";
 /** Time of vitest handle the case */
 const TIMEOUT_TEST_RUNNING = 25000;
 
-describe("Login in page test case", () => {
+describe("Scrapper test case", () => {
   let browser: Browser;
   let page: Page;
   let response: HTTPResponse;
@@ -16,12 +16,13 @@ describe("Login in page test case", () => {
     password: "konsiteste2",
     cpf: "124.440.495-00",
   };
+
   beforeAll(async () => {
     browser = await puppeteer.launch({ headless: "new" });
     page = await browser.newPage();
     response = await PuppeteerRoutines.loginPage(page, payload);
     isLogged = response.status() === 200;
-  });
+  }, TIMEOUT_TEST_RUNNING);
 
   afterAll(async () => {
     await browser.close();
