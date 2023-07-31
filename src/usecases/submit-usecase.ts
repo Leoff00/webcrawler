@@ -1,18 +1,27 @@
 import { SubmitDTO } from "../submitDTO";
-import { consumeQueue, scrapper } from "../lib";
-import { getCachedData, cacheData } from "../lib";
+import {
+  consumeQueue,
+  eqlIndex,
+  eqlSearch,
+  produceMessages,
+  scrapper,
+} from "../lib";
+import { cacheData } from "../lib";
 
 export class SubmitUseCase {
-  public static async execute(submitDTO: SubmitDTO): Promise<string> {
-    const hasCache = await getCachedData(submitDTO.cpf);
-    const message = await consumeQueue();
+  public static async execute(submitDTO: SubmitDTO): Promise<any> {
+    await produceMessages();
+    const { hasCache, messageRes } = await consumeQueue(submitDTO.cpf);
 
     if (!hasCache) {
       const benefits = await scrapper(submitDTO);
       await cacheData(submitDTO.cpf, benefits);
-      return benefits;
+      await eqlIndex(benefits || messageRes);
+      const resultNoCache = await eqlSearch();
+      return resultNoCache.hits.hits;
     }
 
-    return hasCache;
+    const resultCache = await eqlSearch();
+    return resultCache.hits.hits;
   }
 }
