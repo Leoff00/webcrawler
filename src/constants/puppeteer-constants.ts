@@ -8,7 +8,9 @@ export const constants = {
     y: 400,
   },
   TIMEOUT: {
-    REDIRECT_DELAY: 2000,
+    WAIT_FOR_TYPE_DELAY: 1000,
+    REDIRECT_DELAY: 5000,
+    LOAD_DELAY: 4000,
     SWITCH_FIELD_DELAY: 100,
     TYPING_DELAY: 25,
     WAIT_CLICK_DELAY: 250,

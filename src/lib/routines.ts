@@ -32,7 +32,7 @@ export class PuppeteerRoutines {
   ): Promise<HTTPResponse> {
     const response = await page.goto(constants.URLS.MAIN);
 
-    await delay(constants.TIMEOUT.REDIRECT_DELAY);
+    await delay(constants.TIMEOUT.WAIT_FOR_TYPE_DELAY);
 
     const loginEl = await page.waitForSelector("input#user", {
       timeout: constants.TIMEOUT.WAIT_FOR_DELAY,
@@ -77,6 +77,7 @@ export class PuppeteerRoutines {
   ): Promise<string> {
     await page.goto(constants.URLS.EXTRACT);
 
+    await delay(constants.TIMEOUT.LOAD_DELAY);
     await PuppeteerRoutines.waitForExtractPageDelay();
     const ion = await page.waitForSelector(".backdrop-no-scroll");
     await ion.click({
