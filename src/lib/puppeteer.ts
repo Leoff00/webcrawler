@@ -12,9 +12,9 @@ import { PuppeteerRoutines } from "./routines";
  */
 export async function scrapper(submitDTO: SubmitDTO): Promise<string> {
   const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--start-maximized"],
+    headless: false,
   });
+
   const page = await browser.newPage();
   await page.setUserAgent(constants.AGENT);
   await page.setExtraHTTPHeaders({
@@ -22,10 +22,8 @@ export async function scrapper(submitDTO: SubmitDTO): Promise<string> {
   });
 
   await PuppeteerRoutines.loginPage(page, submitDTO);
-  await page.goto(constants.URLS.EXTRACT);
 
   const benefit = await PuppeteerRoutines.collectBenefits(page, submitDTO);
-
   await PuppeteerRoutines.waitForExtractPageDelay();
   return benefit;
 }

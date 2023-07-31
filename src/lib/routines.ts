@@ -32,6 +32,8 @@ export class PuppeteerRoutines {
   ): Promise<HTTPResponse> {
     const response = await page.goto(constants.URLS.MAIN);
 
+    await delay(constants.TIMEOUT.REDIRECT_DELAY);
+
     const loginEl = await page.waitForSelector("input#user", {
       timeout: constants.TIMEOUT.WAIT_FOR_DELAY,
     });
@@ -39,6 +41,8 @@ export class PuppeteerRoutines {
     await loginEl.type(submitDTO.login, {
       delay: constants.TIMEOUT.TYPING_DELAY,
     });
+
+    await delay(constants.TIMEOUT.SWITCH_FIELD_DELAY);
 
     const pwdEl = await page.waitForSelector("input#pass", {
       timeout: constants.TIMEOUT.WAIT_FOR_DELAY,
@@ -53,6 +57,8 @@ export class PuppeteerRoutines {
     });
     await btn.focus();
     await btn.click();
+
+    await delay(constants.TIMEOUT.REDIRECT_DELAY);
 
     return response;
   }
@@ -69,6 +75,8 @@ export class PuppeteerRoutines {
     page: Page,
     submitDTO: SubmitDTO
   ): Promise<string> {
+    await page.goto(constants.URLS.EXTRACT);
+
     await PuppeteerRoutines.waitForExtractPageDelay();
     const ion = await page.waitForSelector(".backdrop-no-scroll");
     await ion.click({
@@ -103,6 +111,7 @@ export class PuppeteerRoutines {
       result
     );
 
+    await page.close();
     return benefit;
   }
 
