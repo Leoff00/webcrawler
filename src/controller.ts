@@ -1,5 +1,5 @@
 import errors from "./middlewares/errorMiddleware";
-import list from "./constants/list";
+import { list } from "./constants";
 import { Request, Response } from "express";
 import { SubmitUseCase } from "./usecases/submit-usecase";
 import { SubmitDTO } from "./submitDTO";

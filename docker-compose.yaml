@@ -4,11 +4,31 @@ services:
   redis:
     image: redis:latest
     container_name: redis_container
+    restart: always
     ports:
       - "6379:6379"
     volumes:
       - cache:/cache
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_management
+    restart: always
+    environment:
+      - DEFAULT_
+    networks:
+      - rabbitmq_network
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - /docker_conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - /.docker-conf/rabbitmq/log/:/var/log/rabbitmq/
+
 volumes:
   cache:
     driver: local
+
+networks:
+  rabbitmq_network:
+    driver: bridge

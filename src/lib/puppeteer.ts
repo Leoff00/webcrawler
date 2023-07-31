@@ -26,7 +26,9 @@ export async function scrapper(submitDTO: SubmitDTO): Promise<string> {
     await PuppeteerRoutines.loginPage(page, submitDTO);
 
     const benefit = await PuppeteerRoutines.collectBenefits(page, submitDTO);
-    await PuppeteerRoutines.waitForExtractPageDelay();
+
+    await browser.close();
+
     return benefit;
   } catch (error: unknown) {
     const err = error as ProtocolError;

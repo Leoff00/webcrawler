@@ -110,6 +110,7 @@ export class PuppeteerRoutines {
       (label: HTMLLabelElement) => label.innerText,
       result
     );
+    await PuppeteerRoutines.waitForExtractPageDelay();
 
     await page.close();
     return benefit;

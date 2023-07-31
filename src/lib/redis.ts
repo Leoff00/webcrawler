@@ -1,6 +1,6 @@
 import { createClient, ErrorReply } from "redis";
 import { logTypes } from "../logger";
-import { REDIS_CACHABLE_TIME } from "../constants/redis-constants";
+import { REDIS_CACHABLE_TIME } from "../constants";
 
 const redis = createClient({
   url: "redis://localhost:6379",
@@ -16,11 +16,13 @@ export async function getCachedData(cpf: string): Promise<string> {
   try {
     await redis.connect();
     const hasData = await redis.get(cpf);
-    await redis.quit();
+    await redis.disconnect();
     return hasData;
   } catch (error: unknown) {
-    const err = error as ErrorReply;
-    logTypes.errorLog.error(err);
+    if (error) {
+      const err = error as ErrorReply;
+      logTypes.errorLog.error(err);
+    }
   }
 }
 
@@ -41,11 +43,12 @@ export async function cacheData(cpf: string, data: string): Promise<string> {
         EX: REDIS_CACHABLE_TIME,
       });
     }
-
-    await redis.quit();
+    await redis.disconnect();
     return hasData;
   } catch (error: unknown) {
-    const err = error as ErrorReply;
-    logTypes.errorLog.error(err);
+    if (error) {
+      const err = error as ErrorReply;
+      logTypes.errorLog.error(err);
+    }
   }
 }
