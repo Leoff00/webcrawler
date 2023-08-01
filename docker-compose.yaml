@@ -15,7 +15,8 @@ services:
     container_name: rabbitmq_management
     restart: always
     environment:
-      - DEFAULT_
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_LOGIN}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PWD}
     networks:
       - rabbitmq_network
     ports:
@@ -25,10 +26,38 @@ services:
       - /docker_conf/rabbitmq/data/:/var/lib/rabbitmq/
       - /.docker-conf/rabbitmq/log/:/var/log/rabbitmq/
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    container_name: elasticsearch_container
+    restart: always
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+    volumes:
+      - ./esdata/:/usr/share/elasticsearch/data/
+    networks:
+      - elastic_network
+
+  konsiwebcrawler:
+    container_name: konsiwebcrawler_app
+    build:
+      context: .
+    restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+      - elasticsearch
+      - redis
+      - rabbitmq
+
 volumes:
   cache:
     driver: local
 
 networks:
+  elastic_network:
+    driver: bridge
   rabbitmq_network:
     driver: bridge
