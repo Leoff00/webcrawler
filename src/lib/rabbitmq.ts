@@ -1,5 +1,5 @@
 import amqplib, { ConsumeMessage } from "amqplib";
-import { list, options } from "../constants";
+import { CPF_LIST, RABBITMQ_OPTIONS } from "../constants";
 import { logTypes } from "../logger";
 import { getCachedData } from "./redis";
 
@@ -18,19 +18,22 @@ async function disconnectQueue(
 
 export async function produceMessages(): Promise<void> {
   try {
-    const connection = await amqplib.connect(options.url, options.heartbeat);
+    const connection = await amqplib.connect(
+      RABBITMQ_OPTIONS.url,
+      RABBITMQ_OPTIONS.heartbeat
+    );
     const channel = await connection.createChannel();
 
-    await channel.assertQueue(options.queueName);
+    await channel.assertQueue(RABBITMQ_OPTIONS.queueName);
 
     logTypes.infoLogger.info("[RABBITMQ] - Publishing messages RabbitMQ Queue");
-    for (const cpf of list) {
-      channel.sendToQueue(options.queueName, Buffer.from(cpf));
+    for (const cpf of CPF_LIST) {
+      channel.sendToQueue(RABBITMQ_OPTIONS.queueName, Buffer.from(cpf));
     }
 
     await disconnectQueue(channel, connection);
   } catch (error: unknown) {
-    logTypes.errorLog.error(error);
+    logTypes.errorLog.error(`[RABBITMQ] - ${error}`);
   }
 }
 
@@ -39,12 +42,15 @@ export async function consumeQueue(cpf: string): Promise<ConsumeQueueProps> {
     let hasCache: boolean;
     let messageRes: string;
     const messagesArray = [];
-    const connection = await amqplib.connect(options.url, options.heartbeat);
+    const connection = await amqplib.connect(
+      RABBITMQ_OPTIONS.url,
+      RABBITMQ_OPTIONS.heartbeat
+    );
     const channel = await connection.createChannel();
 
-    await channel.assertQueue(options.queueName, { durable: true });
+    await channel.assertQueue(RABBITMQ_OPTIONS.queueName, { durable: true });
     await channel.consume(
-      options.queueName,
+      RABBITMQ_OPTIONS.queueName,
       async (message: ConsumeMessage) => {
         const content = message.content.toString();
         messagesArray.push(content);
@@ -61,6 +67,6 @@ export async function consumeQueue(cpf: string): Promise<ConsumeQueueProps> {
     await disconnectQueue(channel, connection);
     return { hasCache, messageRes };
   } catch (error: unknown) {
-    logTypes.errorLog.error(error);
+    logTypes.errorLog.error(`[RABBITMQ] - ${error}`);
   }
 }

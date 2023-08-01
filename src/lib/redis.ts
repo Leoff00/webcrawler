@@ -1,10 +1,6 @@
-import { createClient, ErrorReply } from "redis";
+import { createClient, ErrorReply, ClientOfflineError } from "redis";
 import { logTypes } from "../logger";
 import { REDIS_CACHABLE_TIME } from "../constants";
-
-export const redis = createClient({
-  url: process.env.REDIS_CLIENT_URL,
-});
 
 /**
  * Get cached data then return to the client.
@@ -13,21 +9,24 @@ export const redis = createClient({
  * @author Leoff00
  */
 export async function getCachedData(cpf: string): Promise<string> {
+  const redis = createClient({
+    url: process.env.REDIS_CLIENT_URL,
+  });
+
   try {
     await redis.connect();
     const hasData = await redis.get(cpf);
 
     if (!hasData) {
-      logTypes.infoLogger.error("[REDIS] - Data wasn't cached!");
+      logTypes.infoLogger.info("[REDIS] - Data wasn't cached yet");
     }
 
-    logTypes.infoLogger.info("[REDIS] - Data successfully cached!");
     await redis.disconnect();
     return hasData;
   } catch (error: unknown) {
     if (error) {
       const err = error as ErrorReply;
-      logTypes.errorLog.error(err);
+      logTypes.errorLog.error(`[REDIS] - ${err}`);
     }
   }
 }
@@ -40,6 +39,10 @@ export async function getCachedData(cpf: string): Promise<string> {
  * @author Leoff00
  */
 export async function cacheData(cpf: string, data: string): Promise<void> {
+  const redis = createClient({
+    url: process.env.REDIS_CLIENT_URL,
+  });
+
   try {
     await redis.connect();
     await redis.set(cpf, data, {
@@ -51,7 +54,7 @@ export async function cacheData(cpf: string, data: string): Promise<void> {
   } catch (error: unknown) {
     if (error) {
       const err = error as ErrorReply;
-      logTypes.errorLog.error({ err });
+      logTypes.errorLog.error(`[REDIS] - ${err}`);
     }
   }
 }

@@ -1,4 +1,10 @@
-export const list = [
+/**
+ * CPF list that should be published in rabbitmq
+ * and consumed by the application.
+ * @constant list string
+ * @author Leoff00
+ */
+export const CPF_LIST = [
   "033.355.888-00",
   "124.440.495-00",
   "067.510.675-34",

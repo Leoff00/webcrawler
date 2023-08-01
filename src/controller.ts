@@ -1,25 +1,38 @@
-import errors from "./middlewares/errorMiddleware";
-import { list } from "./constants";
+import { BadRequest } from "./middlewares";
+import { CPF_LIST } from "./constants";
 import { Request, Response } from "express";
-import { SubmitUseCase } from "./usecases/submit-usecase";
 import { SubmitDTO } from "./submitDTO";
+import {
+  FindBenefitUseCase,
+  FindBenefitsUseCase,
+  SubmitUseCase,
+} from "./usecases";
 
 export class Controller {
-  public static async handler(request: Request, response: Response) {
+  public static async SubmitBenefitsHandler(
+    request: Request,
+    response: Response
+  ) {
     const submitDTO = request.body as SubmitDTO;
 
-    if (!list.includes(submitDTO.cpf)) {
-      throw new errors.BadRequest(
-        "CPF invalido! Por favor, digite um CPF valido."
-      );
+    if (!CPF_LIST.includes(submitDTO.cpf)) {
+      throw new BadRequest("CPF invalido! Por favor, digite um CPF valido.");
     }
 
-    const { cache, benefits } = await SubmitUseCase.execute(submitDTO);
+    await SubmitUseCase.execute(submitDTO);
 
-    if (!cache || !benefits) {
-      return response.status(504).json({
-        status: 504,
-        message: "Não foi possível realizar a extração, tente novamente.",
+    return response.status(201).json({
+      status: 201,
+      message: "Beneficio indexados",
+    });
+  }
+  public static async FindBenefitsHandler(_: Request, response: Response) {
+    const { benefits, cache } = await FindBenefitsUseCase.execute();
+
+    if (!benefits) {
+      return response.status(422).json({
+        status: 422,
+        message: "Oops, algo falhou, tente fazer a requisição novamente.",
       });
     }
 
@@ -28,6 +41,30 @@ export class Controller {
       message: "Beneficios encontrados",
       cache: cache,
       benefits: benefits,
+    });
+  }
+
+  public static async FindBenefitHandler(request: Request, response: Response) {
+    const elasticId = request.params.elasticId as string;
+
+    if (!elasticId) {
+      throw new BadRequest("id para consulta obrigatório!");
+    }
+
+    const { benefitById, cache } = await FindBenefitUseCase.execute(elasticId);
+
+    if (!benefitById) {
+      return response.status(422).json({
+        status: 422,
+        message: "Oops, algo falhou, tente fazer a requisição novamente.",
+      });
+    }
+
+    return response.status(200).json({
+      status: 200,
+      message: "Beneficios encontrados",
+      cache: cache,
+      benefit: benefitById,
     });
   }
 }

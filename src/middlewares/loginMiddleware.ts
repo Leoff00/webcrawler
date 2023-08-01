@@ -1,5 +1,5 @@
-import errors from "./errorMiddleware";
 import { Request, Response, NextFunction } from "express";
+import { BadRequest } from "./errorMiddleware";
 import { SubmitDTO } from "submitDTO";
 
 const AUTH = ["konsiteste2", "konsiteste7"];
@@ -13,7 +13,7 @@ export function loginMiddleware(
   const withoutLogin =
     !AUTH.includes(submitDTO.login) || !AUTH.includes(submitDTO.password);
   if (withoutLogin) {
-    throw new errors.BadRequest("Login ou senha invalidos.");
+    throw new BadRequest("Login ou senha invalidos.");
   }
 
   next();

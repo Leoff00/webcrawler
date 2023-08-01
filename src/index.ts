@@ -1,9 +1,6 @@
 import "dotenv/config";
-import { app } from "./app";
-import { logTypes } from "./logger";
+import { Clusterize } from "./cluster-app";
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, async () => {
-  logTypes.infoLogger.info(`listening on http://localhost:${PORT}`);
-});
+Clusterize(PORT);

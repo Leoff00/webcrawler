@@ -4,6 +4,8 @@ services:
   redis:
     image: redis:latest
     container_name: redis_container
+    networks:
+      - app_network
     restart: always
     ports:
       - "6379:6379"
@@ -18,7 +20,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_LOGIN}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PWD}
     networks:
-      - rabbitmq_network
+      - app_network
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -38,15 +40,25 @@ services:
     volumes:
       - ./esdata/:/usr/share/elasticsearch/data/
     networks:
-      - elastic_network
+      - app_network
 
   konsiwebcrawler:
     container_name: konsiwebcrawler_app
     build:
       context: .
     restart: always
+    networks:
+      - app_network
     ports:
-      - "3001:3001"
+      - "3000:3000"
+    environment:
+      REDIS_CLIENT_URL: ${REDIS_CLIENT_URL} # Redis client.
+      ELASTIC_CLIENT_URL: ${ELASTIC_CLIENT_URL} # Elastic search client.
+      RABBITMQ_CLIENT_URL: ${RABBITMQ_CLIENT_URL} # RabbitMQ client.
+      RABBITMQ_LOGIN: ${RABBITMQ_LOGIN} # user for rabbitmq web management
+      RABBITMQ_PWD: ${RABBITMQ_PWD} # password for rabbitmq web management
+      PUPPETEER_PATH: ${PUPPETEER_PATH} # Puppeteer container path
+
     depends_on:
       - elasticsearch
       - redis
@@ -57,7 +69,5 @@ volumes:
     driver: local
 
 networks:
-  elastic_network:
-    driver: bridge
-  rabbitmq_network:
+  app_network:
     driver: bridge
