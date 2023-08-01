@@ -1,27 +1,39 @@
 import { SubmitDTO } from "../submitDTO";
 import {
   consumeQueue,
-  eqlIndex,
-  eqlSearch,
+  elasticIndex,
+  elasticSearch,
   produceMessages,
   scrapper,
+  cacheData,
 } from "../lib";
-import { cacheData } from "../lib";
+import { SearchHit } from "@elastic/elasticsearch/lib/api/types";
+
+type SubmitUseCasePropsNoCache = {
+  cache: string;
+  benefits: string;
+};
+
+type SubmitUseCasePropsCache = {
+  cache: string;
+  benefits: SearchHit<unknown>[];
+};
 
 export class SubmitUseCase {
-  public static async execute(submitDTO: SubmitDTO): Promise<any> {
+  public static async execute(
+    submitDTO: SubmitDTO
+  ): Promise<SubmitUseCasePropsNoCache | SubmitUseCasePropsCache> {
     await produceMessages();
-    const { hasCache, messageRes } = await consumeQueue(submitDTO.cpf);
+    const { hasCache } = await consumeQueue(submitDTO.cpf);
 
     if (!hasCache) {
       const benefits = await scrapper(submitDTO);
+      await elasticIndex(benefits);
       await cacheData(submitDTO.cpf, benefits);
-      await eqlIndex(benefits || messageRes);
-      const resultNoCache = await eqlSearch();
-      return resultNoCache.hits.hits;
+      return { cache: "data not cached", benefits: benefits };
     }
 
-    const resultCache = await eqlSearch();
-    return resultCache.hits.hits;
+    const resultCache = await elasticSearch();
+    return { cache: "data cached", benefits: resultCache.hits.hits };
   }
 }

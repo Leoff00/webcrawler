@@ -1,5 +1,5 @@
 export const options = {
   queueName: "benefits",
-  url: "amqp://localhost:5672",
   heartbeat: "heartbeat=60",
+  url: process.env.RABBITMQ_CLIENT_URL,
 };

@@ -14,11 +14,19 @@ export class Controller {
       );
     }
 
-    const benefits = await SubmitUseCase.execute(submitDTO);
+    const { cache, benefits } = await SubmitUseCase.execute(submitDTO);
+
+    if (!cache || !benefits) {
+      return response.status(504).json({
+        status: 504,
+        message: "Não foi possível realizar a extração, tente novamente.",
+      });
+    }
 
     return response.status(200).json({
       status: 200,
       message: "Beneficios encontrados",
+      cache: cache,
       benefits: benefits,
     });
   }

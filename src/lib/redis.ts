@@ -3,7 +3,7 @@ import { logTypes } from "../logger";
 import { REDIS_CACHABLE_TIME } from "../constants";
 
 export const redis = createClient({
-  url: "redis://localhost:6379",
+  url: process.env.REDIS_CLIENT_URL,
 });
 
 /**
@@ -16,8 +16,13 @@ export async function getCachedData(cpf: string): Promise<string> {
   try {
     await redis.connect();
     const hasData = await redis.get(cpf);
-    await redis.disconnect();
 
+    if (!hasData) {
+      logTypes.infoLogger.error("[REDIS] - Data wasn't cached!");
+    }
+
+    logTypes.infoLogger.info("[REDIS] - Data successfully cached!");
+    await redis.disconnect();
     return hasData;
   } catch (error: unknown) {
     if (error) {
@@ -41,6 +46,7 @@ export async function cacheData(cpf: string, data: string): Promise<void> {
       EX: REDIS_CACHABLE_TIME,
     });
 
+    logTypes.infoLogger.info("[REDIS] - Data successfully cached!");
     await redis.disconnect();
   } catch (error: unknown) {
     if (error) {

@@ -23,7 +23,7 @@ export async function produceMessages(): Promise<void> {
 
     await channel.assertQueue(options.queueName);
 
-    logTypes.infoLogger.info("Publishing messages RabbitMQ Queue");
+    logTypes.infoLogger.info("[RABBITMQ] - Publishing messages RabbitMQ Queue");
     for (const cpf of list) {
       channel.sendToQueue(options.queueName, Buffer.from(cpf));
     }

@@ -3,15 +3,18 @@ import { format, createLogger, transports } from "winston";
 
 const { combine, label, printf, colorize } = format;
 const APP_NAME = "KONSI WEB CRAWLER";
-const date = new Date().toISOString().split("T")[0];
-const time = `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getMinutes()}`;
+const [date, time] = new Date()
+  .toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+  })
+  .split(",");
 
 const info = printf(({ level, message, label }) => {
-  return `[${level.toUpperCase()}] ${date} ${time} [${label}]: ${message}`;
+  return `[${level.toUpperCase()}] ${date}${time} [${label}]: ${message}`;
 });
 
 const error = printf(({ level, message, label }) => {
-  return `[${level.toUpperCase()}] ${date} ${time} [${label}]: ${message}`;
+  return `[${level.toUpperCase()}] ${date}${time} [${label}]: ${message}`;
 });
 
 export const logTypes = {
@@ -39,7 +42,7 @@ export function logMiddleware(
 
   custom.log(
     "info",
-    `${date} [${APP_NAME}]: | ${request.method} | ${request.path}`
+    `${date}${time} [${APP_NAME}]: ${request.method} | ${request.path}`
   );
 
   next();

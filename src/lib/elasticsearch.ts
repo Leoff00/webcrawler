@@ -11,21 +11,20 @@ import {
  *  benefit searched
  * @author Leoff00
  */
-export async function eqlSearch(): Promise<
+export async function elasticSearch(): Promise<
   SearchResponse<unknown, Record<string, AggregationsAggregate>>
 > {
   const client = new Client({
-    node: "http://localhost:9200",
+    node: process.env.ELASTIC_CLIENT_URL,
   });
   try {
-    client;
-    logTypes.infoLogger.info("Connected with elasticsearch!");
     const result = await client.search({
       index: "benefits",
     });
 
     await client.close();
 
+    logTypes.infoLogger.info(`[ELASTIC] - Consulting elasticsearch query!`);
     return result;
   } catch (error: unknown) {
     logTypes.errorLog.error(error);
@@ -39,15 +38,13 @@ export async function eqlSearch(): Promise<
  *  benefit indexed
  * @author Leoff00
  */
-export async function eqlIndex(benefits: string): Promise<void> {
+export async function elasticIndex(benefits: string): Promise<void> {
   const client = new Client({
-    node: "http://localhost:9200",
+    node: process.env.ELASTIC_CLIENT_URL,
   });
   try {
-    const info = await client.info();
     logTypes.infoLogger.info(
-      "Connected with elasticsearch!",
-      info.cluster_name
+      "[ELASTIC] - Indexing data in elasticsearch query!"
     );
     await client.index({
       index: "benefits",

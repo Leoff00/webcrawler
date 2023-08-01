@@ -32,6 +32,6 @@ export async function scrapper(submitDTO: SubmitDTO): Promise<string> {
     return benefit;
   } catch (error: unknown) {
     const err = error as ProtocolError;
-    logTypes.errorLog.error(err);
+    logTypes.errorLog.error(`[PUPPETEER] - ${err}`);
   }
 }
