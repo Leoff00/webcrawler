@@ -1,6 +1,6 @@
 import { createClient, ErrorReply, ClientOfflineError } from "redis";
 import { logTypes } from "../logger";
-import { REDIS_CACHABLE_TIME } from "../constants";
+import { REDIS_CACHABLE_TIME, REDIS_URL } from "../constants";
 
 /**
  * Get cached data then return to the client.
@@ -10,7 +10,7 @@ import { REDIS_CACHABLE_TIME } from "../constants";
  */
 export async function getCachedData(cpf: string): Promise<string> {
   const redis = createClient({
-    url: process.env.REDIS_CLIENT_URL,
+    url: REDIS_URL,
   });
 
   try {
@@ -40,7 +40,7 @@ export async function getCachedData(cpf: string): Promise<string> {
  */
 export async function cacheData(cpf: string, data: string): Promise<void> {
   const redis = createClient({
-    url: process.env.REDIS_CLIENT_URL,
+    url: REDIS_URL,
   });
 
   try {

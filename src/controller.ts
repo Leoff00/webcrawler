@@ -32,7 +32,8 @@ export class Controller {
     if (!benefits) {
       return response.status(422).json({
         status: 422,
-        message: "Oops, algo falhou, tente fazer a requisição novamente.",
+        message: `Oops, benefícios ainda não foram cacheados, tente 
+          fazer a requisição novamente.`,
       });
     }
 
@@ -48,7 +49,7 @@ export class Controller {
     const elasticId = request.params.elasticId as string;
 
     if (!elasticId) {
-      throw new BadRequest("id para consulta obrigatório!");
+      throw new BadRequest("ID elastico para consulta obrigatório!");
     }
 
     const { benefitById, cache } = await FindBenefitUseCase.execute(elasticId);
@@ -56,7 +57,8 @@ export class Controller {
     if (!benefitById) {
       return response.status(422).json({
         status: 422,
-        message: "Oops, algo falhou, tente fazer a requisição novamente.",
+        message: `Oops, benefício ainda não foi cacheado, tente 
+          fazer a requisição novamente.`,
       });
     }
 

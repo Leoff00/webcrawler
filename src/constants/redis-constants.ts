@@ -4,3 +4,6 @@
  * @author Leoff00
  */
 export const REDIS_CACHABLE_TIME = 3600;
+
+export const REDIS_URL =
+  process.env.REDIS_CLIENT_URL || "redis://localhost:6379";

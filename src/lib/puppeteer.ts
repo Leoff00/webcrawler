@@ -15,7 +15,7 @@ export async function scrapper(submitDTO: SubmitDTO): Promise<string> {
   try {
     const browser = await puppeteer.launch({
       headless: "new",
-      executablePath: process.env.PUPPETEER_PATH,
+      executablePath: process.env.PUPPETEER_PATH || null,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 

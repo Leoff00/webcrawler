@@ -1,3 +1,4 @@
+import { ELASTIC_URL } from "../constants";
 import { Client } from "@elastic/elasticsearch";
 import { logTypes } from "../logger";
 import {
@@ -11,12 +12,11 @@ import {
  * - benefits found.
  * @author Leoff00
  */
-
 export async function elasticSearch(): Promise<
   SearchResponse<unknown, Record<string, AggregationsAggregate>>
 > {
   const client = new Client({
-    node: process.env.ELASTIC_CLIENT_URL,
+    node: ELASTIC_URL,
   });
   try {
     const result = await client.search({
@@ -36,7 +36,7 @@ export async function elasticSearchById(
   elasticId: string
 ): Promise<SearchResponse<unknown, Record<string, AggregationsAggregate>>> {
   const client = new Client({
-    node: process.env.ELASTIC_CLIENT_URL,
+    node: ELASTIC_URL,
   });
   try {
     const result = await client.search({
@@ -57,16 +57,9 @@ export async function elasticSearchById(
   }
 }
 
-/**
- * Elastic search function index the benefit metric in elasticsearch.
- * @param benefits string
- * @returns Promise<void>
- *  benefit indexed
- * @author Leoff00
- */
 export async function elasticIndex(benefits: string): Promise<void> {
   const client = new Client({
-    node: process.env.ELASTIC_CLIENT_URL,
+    node: ELASTIC_URL,
   });
   try {
     logTypes.infoLogger.info(
