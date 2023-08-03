@@ -23,7 +23,7 @@ export class Controller {
 
     return response.status(201).json({
       status: 201,
-      message: "Beneficio indexados",
+      message: "Beneficio indexado",
     });
   }
   public static async FindBenefitsHandler(_: Request, response: Response) {
@@ -32,7 +32,7 @@ export class Controller {
     if (!benefits) {
       return response.status(422).json({
         status: 422,
-        message: `Oops, benefícios ainda não foram cacheados, tente 
+        message: `Oops, parece que o benefício ainda não foi indexado, tente 
           fazer a requisição novamente.`,
       });
     }
