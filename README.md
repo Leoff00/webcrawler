@@ -10,6 +10,9 @@ check it out the screenshot of the UI (simple):
 #
 
 and the application flow:
+
+<br>
+
 <img src="./.github/docs/flow.png" alt="application flow" />
 
 #
