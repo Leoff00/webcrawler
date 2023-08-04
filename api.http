@@ -6,3 +6,11 @@ content-type: application/json
   "password": "konsiteste2",
   "cpf": "124.440.495-00"
 }
+
+GET http://localhost:3000/api/v1/benefits HTTP/1.1
+content-type: application/json
+
+
+GET http://localhost:3000/api/v1/benefit/:id HTTP/1.1
+content-type: application/json
+
